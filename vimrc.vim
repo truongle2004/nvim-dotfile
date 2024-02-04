@@ -33,7 +33,11 @@ set statusline+=%{get(b:,'gitsigns_status','')}
 nnoremap <C-Right> :tabnext<CR>
 nnoremap <C-Left> :tabprevious<CR>
 set nocompatible
-autocmd filetype cpp nnoremap <F5> :w <bar> !g++ -std=c++17 -O2 -Wall % -o %:r && %:r.exe <CR>
+" Compile and run C++ code with F5
+autocmd FileType cpp nnoremap <F5> :w <bar> !g++ -std=c++17 -O2 -Wall % -o %:r.exe \| ./%:r.exe<CR>
+
+
+
 set nocompatible              " be iMproved, required
 set number
 set relativenumber
@@ -48,17 +52,19 @@ Plug 'preservim/nerdTree'
 Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim', {'branch':'release'}
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'jackguo380/vim-lsp-cxx-highlight'    
+Plug 'vim-airline/vim-airline-themes'  
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }   
 Plug 'Dhanus3133/LeetBuddy.nvim'
 Plug 'folke/tokyonight.nvim'
 Plug 'Yggdroot/indentLine'
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'olimorris/onedarkpro.nvim'
+
+	
 call plug#end()
 
-colorscheme tokyonight-night
+colorscheme onedark
 
 
 command! -nargs=1 ReloadFolder :e <args>
@@ -125,7 +131,7 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 cnoremap <C-x> q
 
 
-
+nnoremap <silent> <leader>to    :FloatermNew<CR>
 " Assuming you're using CoC (Conqueror of Completion)
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
@@ -133,6 +139,18 @@ inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 " Enable compe and configure key mappings
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 
 " Clear highlighting on escape in normal mode
