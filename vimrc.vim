@@ -12,7 +12,7 @@ set ruler
 set guifont=*
 set backspace=indent,eol,start
 set clipboard=unnamed
-
+set laststatus=2
 
 set shell=powershell.exe
 set shellxquote=
@@ -22,7 +22,9 @@ let &shellpipe    = '| Out-File -Encoding UTF8 %s'
 let &shellredir   = '| Out-File -Encoding UTF8 %s'
 hi Normal guibg=NONE ctermbg=NONE
 
-
+set synmaxcol=3000    "Prevent breaking syntax hightlight when string too long. Max = 3000"
+set lazyredraw
+au! BufNewFile,BufRead *.json set foldmethod=indent " Change foldmethod for specific filetype
 
 
 
@@ -42,68 +44,91 @@ set nocompatible              " be iMproved, required
 set number
 set relativenumber
 call plug#begin(stdpath('config').'/plugged')
+Plug 'xiyaowong/transparent.nvim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'                
 Plug 'Pocco81/auto-save.nvim'
 Plug 'voldikss/vim-floaterm'  
 Plug 'preservim/nerdcommenter' 
-Plug 'easymotion/vim-easymotion'
 Plug 'jiangmiao/auto-pairs'
 Plug 'preservim/nerdTree'     
 Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim', {'branch':'release'}
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'  
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.5' }   
-Plug 'Dhanus3133/LeetBuddy.nvim'
-Plug 'folke/tokyonight.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'hinell/lsp-timeout.nvim'
+" Plug 'editorconfig/editorconfig-vim'
+" Plug 'lewis6991/gitsigns.nvim'
+" Plug 'sindrets/diffview.nvim'
+Plug 'joshdick/onedark.vim'
 Plug 'Yggdroot/indentLine'
-Plug 'lewis6991/gitsigns.nvim'
-Plug 'olimorris/onedarkpro.nvim'
-
-	
 call plug#end()
 
 colorscheme onedark
 
+" air-line
+let g:airline_powerline_fonts = 1
 
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''	
+
+let g:airline#extensions#tabline#enabled = 0
 command! -nargs=1 ReloadFolder :e <args>
 map  <Leader>w <Plug>(easymotion-bd-w)
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_types = 1
-let g:go_highlight_function_parameters = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_generate_tags = 1
-let g:go_highlight_format_strings = 1
-let g:go_highlight_variable_declarations = 1
-let g:go_auto_sameids = 1
+
 
 let g:indentLine_enabled = 1
 
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
 
+" move buffes
+" Move to the next buffer
+nnoremap <A-.> :bnext<CR>
+
+" Move to the previous buffer
+nnoremap <A-,> :bprevious<CR>
+
+
+" eslint
+let g:coc_global_extensions = ['coc-eslint','coc-prettier']
+autocmd FileType javascript,json,yaml,yml,typescript,markdown setl formatprg=eslint\ --fix\ --stdin
+autocmd FileType javascript,json,yaml,yml,typescript,markdown setl formatprg=prettier\ --write\ --stdin
+
+
+
+command! -nargs=0 PyRun :terminal python %<CR>
+command! -nargs=0 Action :lua vim.lsp.buf.code_action()<CR>
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
-
-
-" leetcode config
-
-nnoremap <leader>lq :LBQuestions<CR>
-nnoremap <leader>ll :LBQuestion<CR>
-nnoremap <leader>lr :LBReset<CR>
-nnoremap <leader>lt :LBTest<CR>
-nnoremap <leader>ls :LBSubmit<CR>
-
-
-
+command! -nargs=0 Eslint :CocCommand eslint.executeAutofix
 
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <leader>m :NERDTree<CR>
@@ -130,7 +155,6 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
 " exit terminal
 cnoremap <C-x> q
 
-
 nnoremap <silent> <leader>to    :FloatermNew<CR>
 " Assuming you're using CoC (Conqueror of Completion)
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
@@ -153,6 +177,13 @@ vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
 
+" Remap for do codeAction of selected region
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+
 " Clear highlighting on escape in normal mode
 nnoremap <esc> :noh<return><esc>
 let g:airline#extensions#tabline#enabled = 1
@@ -160,11 +191,37 @@ nmap <M-Right> :vertical resize +1<CR>
 nmap <M-Left> :vertical resize -1<CR>
 nmap <M-Down> :resize +1<CR>
 nmap <M-Up> :resize -1<CR>
+
 lua <<EOF
 local async = require "plenary.async"
-require("leetbuddy").setup({
-	language = "cpp"	,
-})
+local nvim_lsp = require('lspconfig')
 
-require('gitsigns').setup()
+nvim_lsp.tsserver.setup{
+  on_attach = function(client)
+    print('LSP started for TypeScript!')
+  end,
+  filetypes = { 'javascriptreact','javascript.jsx','javascript','typescript', 'typescriptreact', 'typescript.tsx' },
+}
+nvim_lsp.clangd.setup{
+  on_attach = function(client)
+    print('LSP started for C++!')
+  end,
+  filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'hpp', 'h' },
+}
+nvim_lsp.html.setup({})
+nvim_lsp.cssls.setup({})
+--require('gitsigns').setup()
+
+-- Enable built-in LSP
+if vim.fn.has('nvim-0.5') == 1 then
+    -- Enable LSP
+    vim.o.updatetime = 300
+    -- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.lsp.diagnostic.show_line_diagnostics()]]
+
+    -- Python LSP configuration with Pyright
+    local lspconfig = require('lspconfig')
+    lspconfig.pyright.setup{}
+end
+
+
 EOF
