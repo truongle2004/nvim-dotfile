@@ -207,10 +207,10 @@ require("lazy").setup({
 	{
 		"nvim-lua/plenary.nvim",
 	},
-	-- {
-	--
-	--   "nvim-tree/nvim-web-devicons",
-	-- },
+	{
+
+		"nvim-tree/nvim-web-devicons",
+	},
 	{
 		"ibhagwan/fzf-lua",
 		-- optional for icon support
@@ -359,15 +359,26 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"nvim-tree/nvim-tree.lua",
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+		},
 		config = function()
-			require("nvim-tree").setup({
-				view = {
-					width = 40,
-				},
-			})
+			require("neo-tree").setup()
 		end,
 	},
+	-- {
+	-- 	"nvim-tree/nvim-tree.lua",
+	-- 	config = function()
+	-- 		require("nvim-tree").setup({
+	-- 			view = {
+	-- 				width = 40,
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"stevearc/conform.nvim",
 		event = { "BufReadPre", "BufNewFile" },
@@ -669,7 +680,7 @@ map("i", "<c-j>", "<down>")
 map("i", "<c-k>", "<up>")
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jj", "<ESC>")
-map("n", "<leader>m", ":NvimTreeToggle<CR>")
+map("n", "<leader>m", ":Neotree<CR>")
 map("n", "<leader>n", ":NvimTreeFocus<cr>")
 map("n", "<esc>", ":noh<cr>")
 map("n", "<M-right>", ":vertical resize +1<CR>")
