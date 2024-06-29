@@ -9,6 +9,7 @@ vim.g.mapleader = " "
 opt.shell = "pwsh"
 opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
 opt.shellquote = ""
+opt.cmdheight = 0 -- hide status line when are command mode
 opt.shellxquote = ""
 opt.termguicolors = true
 vim.g.loaded_netrw = 1
