@@ -1,0 +1,4 @@
+(variable_declarator
+        (object
+                (pair
+                        key: (property_identifier))))
