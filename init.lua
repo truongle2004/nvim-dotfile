@@ -1,7 +1,6 @@
 ---@diagnostic disable: undefined-global, missing-fields
 local opt = vim.opt
 
-
 vim.g.mapleader = " "
 opt.shell = "pwsh"
 opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
@@ -27,6 +26,8 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 opt.expandtab = true
+
+opt.shada = ""
 opt.autoindent = true
 opt.wrap = false
 opt.ignorecase = true
@@ -45,7 +46,7 @@ opt.splitright = true -- split windows right
 opt.colorcolumn = "80"
 vim.o.wrap = true
 -- Enable lazyredraw for better performance during macros and complex operations
-vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false, scope="cursor"})]])
+-- vim.cmd([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false, scope="cursor"})]])
 -- vim.diagnostic.config({
 --     underline = true,
 --     signs = true,
@@ -67,6 +68,13 @@ vim.o.updatetime = 300
 vim.o.termguicolors = true
 vim.o.spelllang = "en_us"
 vim.o.spell = true
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.o.spell = false
+  end,
+})
+
 vim.api.nvim_set_keymap("t", "<C-x>", [[<C-\><C-n>]], { noremap = true, silent = true })
 
 local map = vim.keymap.set
@@ -115,9 +123,32 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- vim.cmd [[colorscheme retrobox]]
+vim.cmd [[colorscheme retrobox]]
 
 require("lazy").setup({
+    {
+        "mg979/vim-visual-multi",
+        event = "VeryLazy",
+    },
+    {
+        "mattn/emmet-vim",
+        --     event = "VeryLazy",
+        --     -- ft = {
+        --     --     "javascript ",
+        --     --     "javascriptreact ",
+        --     --     "jsx ",
+        --     --     "typescript ",
+        --     --     "typescriptreact ",
+        --     --     "tsx ",
+        --     -- },
+    },
+    -- {
+    -- 	"kylechui/nvim-surround",
+    -- 	event = "VeryLazy",
+    -- 	config = function()
+    -- 		require("nvim-surround").setup()
+    -- 	end,
+    -- },
     {
         "stevearc/conform.nvim",
         event = { "BufReadPre", "BufNewFile" },
@@ -188,6 +219,15 @@ require("lazy").setup({
         },
     },
     -- {
+    --     "folke/tokyonight.nvim",
+    --     lazy = false,
+    --     priority = 1000,
+    --     opts = {},
+    --     config = function()
+    --         vim.cmd [[colorscheme tokyonight]]
+    --     end
+    -- },
+    -- {
     --     "craftzdog/solarized-osaka.nvim",
     --     lazy = false,
     --     priority = 1000,
@@ -203,41 +243,26 @@ require("lazy").setup({
     --         vim.cmd [[colorscheme solarized-osaka]]
     --     end
     -- },
-    {
-        "ellisonleao/gruvbox.nvim",
-        lazy = false,
-        config = function()
-            require("gruvbox").setup({
-                italic = {
-                    strings = false,
-                    emphasis = false,
-                    comments = false,
-                    operators = false,
-                    folds = true,
-                },
-            })
-            vim.cmd([[colorscheme gruvbox]])
-        end,
-    },
-    {
-        "nvim-treesitter/nvim-tree-docs",
-        event = { "BufReadPre", "BufNewFile" },
-        dependencies = {
-            "windwp/nvim-ts-autotag",
-        },
-        config = function()
-            local treesitter = require("nvim-treesitter.configs")
-            treesitter.setup({
-                highlight = {
-                    enable = true,
-                },
-                indent = { enable = true },
-                autotag = {
-                    enable = true,
-                },
-            })
-        end,
-    },
+    -- {
+    --     "ellisonleao/gruvbox.nvim",
+    --     lazy = false,
+    --     config = function()
+    --         require("gruvbox").setup({
+    --             italic = {
+    --                 strings = false,
+    --                 emphasis = false,
+    --                 comments = false,
+    --                 operators = false,
+    --                 folds = true,
+    --             },
+    --         })
+    --         vim.cmd([[colorscheme gruvbox]])
+    --     end,
+    -- },
+    -- {
+    --     "nvim-treesitter/nvim-tree-docs",
+    --     event = { "BufReadPre", "BufNewFile" },
+    -- },
     {
         "williamboman/mason.nvim",
         opts = {
@@ -343,15 +368,15 @@ require("lazy").setup({
         event = "InsertEnter",
         dependencies = {
             "hrsh7th/cmp-buffer", -- source for text in buffer
-            "hrsh7th/cmp-path", -- source for file system paths
+            "hrsh7th/cmp-path",   -- source for file system paths
             {
                 "L3MON4D3/LuaSnip",
                 -- follow latest release.
-                version = "v2.*",  -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+                version = "v2.*",           -- Replace <CurrentMajor> by the latest released major (first number of latest release)
             },
-            "saadparwaiz1/cmp_luasnip", -- for autocompletion
+            "saadparwaiz1/cmp_luasnip",     -- for autocompletion
             "rafamadriz/friendly-snippets", -- useful snippets
-            "onsails/lspkind.nvim", -- vs-code like pictograms
+            "onsails/lspkind.nvim",         -- vs-code like pictograms
         },
         config = function()
             local cmp = require("cmp")
@@ -378,15 +403,15 @@ require("lazy").setup({
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-                    ["<C-e>"] = cmp.mapping.abort(), -- close completion window
+                    ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
                     ["<CR>"] = cmp.mapping.confirm({ select = true }),
                 }),
                 -- sources for autocompletion
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
                     { name = "luasnip" }, -- snippets
-                    { name = "buffer" }, -- text within current buffer
-                    { name = "path" }, -- file system paths
+                    { name = "buffer" },  -- text within current buffer
+                    { name = "path" },    -- file system paths
                 }),
 
                 -- configure lspkind for vs-code like pictograms in completion menu
@@ -417,72 +442,85 @@ require("lazy").setup({
         },
         version = "*",
         config = function()
-            -- Load and configure all mini.nvim modules
-            --
-            -- Mini.ai: Extensible text objects
-            -- require('mini.ai').setup()
-
-            -- Mini.bracketed: Jump to different brackets
-            -- require('mini.bracketed').setup()
-
-            -- Mini.bufremove: Remove buffers
-            -- require('mini.bufremove').setup()
-
-            -- Mini.comment: Smart commenting
             require("mini.comment").setup()
 
-            -- Mini.cursorword: Highlight word under cursor
-            -- require('mini.cursorword').setup()
-
-            -- Mini.doc: Generate documentation
-            require("mini.doc").setup()
-
-            -- Mini.files: File management
-            -- require('mini.files').setup()
-
-            -- Mini.fuzzy: Fuzzy finder
-            -- require('mini.fuzzy').setup()
-
-            -- Mini.indentscope: Visualize and work with indent scope
             require("mini.indentscope").setup()
 
-            -- Mini.jump: Jump functionality
-            require("mini.jump").setup({
-                mappings = {
-                    forward = "f",
-                    backward = "F",
-                    forward_till = "t",
-                    backward_till = "T",
-                    repeat_jump = "rp",
-                },
-            })
-
-            -- Mini.jump2d: Jump in 2D
-            require("mini.jump2d").setup({
-                mappings = {
-                    start_jumping = "<leader>w",
-                },
-            })
-
-            -- Mini.move: Move selections
             require("mini.move").setup()
 
-            -- Mini.pairs: Autopairs functionality
             require("mini.pairs").setup()
 
-            -- Mini.splitjoin: Split and join code
             require("mini.splitjoin").setup()
 
-            -- Mini.surround: Surround functionality
             require("mini.surround").setup()
 
-            -- Mini.tabline: Tabline
             require("mini.tabline").setup()
 
-            require("mini.git").setup()
+            require("mini.doc").setup()
 
-            -- require('mini.statusline').setup()
-            -- require('mini.completion').setup()
+            require("mini.diff").setup(
+            -- No need to copy this inside `setup()`. Will be used automatically.
+                {
+                    -- Options for how hunks are visualized
+                    view = {
+                        -- Visualization style. Possible values are 'sign' and 'number'.
+                        -- Default: 'number' if line numbers are enabled, 'sign' otherwise.
+                        style = "sign",
+
+                        -- Signs used for hunks with 'sign' view
+                        signs = { add = "+", change = "~", delete = "-" },
+
+                        -- Priority of used visualization extmarks
+                        priority = 199,
+                    },
+
+                    -- Source for how reference text is computed/updated/etc
+                    -- Uses content from Git index by default
+                    source = nil,
+
+                    -- Delays (in ms) defining asynchronous processes
+                    delay = {
+                        -- How much to wait before update following every text change
+                        text_change = 200,
+                    },
+
+                    -- Module mappings. Use `''` (empty string) to disable one.
+                    mappings = {
+                        -- Apply hunks inside a visual/operator region
+                        apply = "gh",
+
+                        -- Reset hunks inside a visual/operator region
+                        reset = "gH",
+
+                        -- Hunk range textobject to be used inside operator
+                        -- Works also in Visual mode if mapping differs from apply and reset
+                        textobject = "gh",
+
+                        -- Go to hunk range in corresponding direction
+                        goto_first = "[H",
+                        goto_prev = "[h",
+                        goto_next = "]h",
+                        goto_last = "]H",
+                    },
+
+                    -- Various options
+                    options = {
+                        -- Diff algorithm. See `:h vim.diff()`.
+                        algorithm = "histogram",
+
+                        -- Whether to use "indent heuristic". See `:h vim.diff()`.
+                        indent_heuristic = true,
+
+                        -- The amount of second-stage diff to align lines (in Neovim>=0.9)
+                        linematch = 60,
+
+                        -- Whether to wrap around edges during hunk navigation
+                        wrap_goto = false,
+                    },
+                }
+            )
+
+            require("mini.surround").setup()
         end,
     },
     {
@@ -497,11 +535,20 @@ require("lazy").setup({
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        lazy = false,
-        event = { "BufReadPre", "BufNewFile" },
+    },
+    {
+        "windwp/nvim-ts-autotag",
+        dependencies = "nvim-treesitter/nvim-treesitter",
         config = function()
-            require("nvim-treesitter").setup()
+            require("nvim-ts-autotag").setup({})
+            require("nvim-treesitter.configs").setup({
+                highlight = {
+                    enable = true,
+                },
+            })
         end,
+        lazy = true,
+        event = "VeryLazy",
     },
     {
         "nvim-treesitter/playground",
@@ -521,9 +568,6 @@ require("lazy").setup({
 
 ------------------------------------------------ place for creativity ---------------------------------------------
 
-local function file_type()
-    return vim.bo.filetype
-end
 
 local function name_without_ext(str)
     if type(str) ~= "string" then
@@ -535,7 +579,7 @@ local function name_without_ext(str)
 end
 
 function _G.get_file_name()
-    local full_path = vim.fn.expand("%:p")  -- Get the full path
+    local full_path = vim.fn.expand("%:p")     -- Get the full path
     return vim.fn.fnamemodify(full_path, ":t") -- Extract the filename
 end
 
