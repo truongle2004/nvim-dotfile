@@ -1,10 +1,11 @@
 ---@diagnostic disable: undefined-global, missing-fields
-
 -- load leader key first
 vim.g.mapleader = " "
 
+
 -- load color
-vim.cmd.colorscheme("miss-dracula")
+-- vim.cmd.colorscheme("miss-dracula")
+vim.cmd.colorscheme("retrobox")
 
 local map = vim.keymap.set
 
@@ -25,6 +26,8 @@ vim.opt.rtp:prepend(lazypath)
 require("statusline")
 require("winbar")
 require("command")
+require("lsp")
+require("autocmds")
 
 -- setup options and keymaps
 require("core")
@@ -128,9 +131,9 @@ require("lazy").setup({
 			ensure_installed = {
 				"lua-language-server",
 				"stylua",
-                "prettier",
-                "eslint",
-                "typescript-language-server"
+				"prettier",
+				"eslint",
+				"typescript-language-server",
 			},
 		},
 	},
@@ -151,35 +154,36 @@ require("lazy").setup({
 			-- import cmp-nvim-lsp plugin
 			local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-			vim.api.nvim_create_autocmd("LspAttach", {
-				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-				callback = function(ev)
-					-- Buffer local mappings.
-					-- See `:help vim.lsp.*` for documentation on any of the below functions
-					local opts = { buffer = ev.buf, silent = true }
-
-					map("n", "gD", vim.lsp.buf.declaration, opts)
-					map("n", "gd", vim.lsp.buf.definition, opts)
-					map("n", "K", vim.lsp.buf.hover, opts)
-					map("n", "gi", vim.lsp.buf.implementation, opts)
-					-- map('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-					map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
-					map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
-					map("n", "<leader>wl", function()
-						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-					end, opts)
-					--map('n', '<space>D', vim.lsp.buf.type_definition, opts)
-					map("n", "<leader>r", vim.lsp.buf.rename, opts)
-					map({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, opts)
-					map("n", "gr", vim.lsp.buf.references, opts)
-					map("n", "[e", function()
-						vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
-					end, opts)
-					map("n", "]e", function()
-						vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
-					end, opts)
-				end,
-			})
+			-- vim.api.nvim_create_autocmd("LspAttach", {
+			-- 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+			-- 	callback = function(ev)
+			-- 		-- Buffer local mappings.
+			-- 		-- See `:help vim.lsp.*` for documentation on any of the below functions
+			-- 		local opts = { buffer = ev.buf, silent = true }
+			--
+			-- 		map("n", "gD", vim.lsp.buf.declaration, opts)
+			-- 		map("n", "gd", vim.lsp.buf.definition, opts)
+			-- 		map("n", "K", vim.lsp.buf.hover, opts)
+			-- 		map("n", "gi", vim.lsp.buf.implementation, opts)
+			-- 		-- map('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+			-- 		map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+			-- 		map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+			-- 		map("n", "<leader>wl", function()
+			-- 			print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+			-- 		end, opts)
+			-- 		--map('n', '<space>D', vim.lsp.buf.type_definition, opts)
+			-- 		map("n", "<leader>r", vim.lsp.buf.rename, opts)
+			-- 		map({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, opts)
+			-- 		map("n", "gr", vim.lsp.buf.references, opts)
+			-- 		map("n", "[e", function()
+			-- 			vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+			-- 		end, opts)
+			-- 		map("n", "]e", function()
+			-- 			vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+			-- 		end, opts)
+			-- 		map("n", "<leader>e", ":lua vim.lsp.diagnostic.get_line_diagnostics()<cr>", opts)
+			-- 	end,
+			-- })
 
 			-- used to enable autocompletion (assign to every lsp server config)
 			local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -188,7 +192,21 @@ require("lazy").setup({
 				capabilities = capabilities,
 			})
 
-			lspconfig.eslint.setup({})
+			lspconfig.eslint.setup({
+				on_attach = function(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+			})
+
+			lspconfig.html.setup({
+				capabilities = capabilities,
+			})
+			lspconfig.cssls.setup({
+				capabilities = capabilities,
+			})
 
 			local function organize_imports()
 				local params = {

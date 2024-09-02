@@ -79,7 +79,7 @@ for mode, color in pairs({
 	statusline_groups["StatuslineModeSeparator" .. mode] = { fg = colors[color], bg = colors.transparent_black }
 end
 statusline_groups = vim.tbl_extend("error", statusline_groups, {
-	StatuslineItalic = { fg = colors.grey, bg = colors.transparent_black, italic = true },
+	StatuslineItalic = { fg = colors.grey, bg = colors.transparent_black, italic = false },
 	StatuslineSpinner = { fg = colors.bright_green, bg = colors.transparent_black, bold = true },
 	StatuslineTitle = { fg = colors.bright_white, bg = colors.transparent_black, bold = true },
 })
@@ -90,7 +90,7 @@ local groups = vim.tbl_extend("error", statusline_groups, {
 	Boolean = { fg = colors.cyan },
 	Character = { fg = colors.green },
 	ColorColumn = { bg = colors.selection },
-	Comment = { fg = colors.comment, italic = true },
+	Comment = { fg = colors.comment, italic = false },
 	Conceal = { fg = colors.comment },
 	Conditional = { fg = colors.pink },
 	Constant = { fg = colors.yellow },
@@ -194,15 +194,15 @@ local groups = vim.tbl_extend("error", statusline_groups, {
 	["@tag.attribute"] = { fg = colors.green },
 	["@tag.delimiter"] = { fg = colors.cyan },
 	["@text"] = { fg = colors.orange },
-	["@text.emphasis"] = { fg = colors.yellow, italic = true }, -- italic
+	["@text.emphasis"] = { fg = colors.yellow, italic = false }, -- italic
 	["@text.literal"] = { fg = colors.yellow }, -- inline code
 	["@text.reference"] = { fg = colors.orange, bold = true },
 	["@text.strong"] = { fg = colors.orange, bold = true }, -- bold
 	["@text.title"] = { fg = colors.pink, bold = true }, -- title
 	["@text.underline"] = { fg = colors.orange },
-	["@text.uri"] = { fg = colors.yellow, italic = true }, -- urls
+	["@text.uri"] = { fg = colors.yellow, italic = false }, -- urls
 	["@type"] = { fg = colors.bright_cyan },
-	["@type.builtin"] = { fg = colors.cyan, italic = true },
+	["@type.builtin"] = { fg = colors.cyan, italic = false },
 	["@type.qualifier"] = { fg = colors.pink },
 	["@variable"] = { fg = colors.fg },
 	["@variable.builtin"] = { fg = colors.purple },
@@ -243,7 +243,7 @@ local groups = vim.tbl_extend("error", statusline_groups, {
 	DiagnosticUnderlineHint = { undercurl = true, sp = colors.cyan },
 	DiagnosticUnderlineInfo = { undercurl = true, sp = colors.cyan },
 	DiagnosticUnderlineWarn = { undercurl = true, sp = colors.yellow },
-	DiagnosticUnnecessary = { fg = colors.grey, italic = true },
+	DiagnosticUnnecessary = { fg = colors.grey, italic = false },
 	DiagnosticVirtualTextError = { fg = colors.red, bg = colors.transparent_red },
 	DiagnosticVirtualTextHint = { fg = colors.cyan, bg = colors.transparent_blue },
 	DiagnosticVirtualTextInfo = { fg = colors.cyan, bg = colors.transparent_blue },

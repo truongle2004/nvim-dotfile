@@ -30,3 +30,5 @@ map("n", "<leader>ff", ":FzfLua files<cr>")
 map("n", "<leader><leader>f", ":FzfLua grep_project<cr>")
 map("v", "<leader>l", "$y<cr>")
 map("n", "<leader>sc", ":source %<cr>")
+
+vim.api.nvim_set_keymap("t", "<C-x>", [[<C-\><C-n>]], { noremap = true, silent = true })

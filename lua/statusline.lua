@@ -1,4 +1,5 @@
 local icons = require("icons")
+local color_name = vim.g.colors_name
 
 local M = {}
 
@@ -90,6 +91,14 @@ function M.mode_component()
 	end
 
 	-- Construct the bubble-like component.
+	if color_name == "retrobox" then
+		return table.concat({
+			string.format("%%#StatuslineModeSeparator%s#", hl),
+			string.format("%%#StatuslineMode%s#%s", hl, mode),
+			string.format("%%#StatuslineModeSeparator%s#", hl),
+		})
+	end
+
 	return table.concat({
 		string.format("%%#StatuslineModeSeparator%s#", hl),
 		string.format("%%#StatuslineMode%s#%s", hl, mode),
