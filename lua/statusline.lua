@@ -91,7 +91,7 @@ function M.mode_component()
 	end
 
 	-- Construct the bubble-like component.
-	if color_name == "retrobox" then
+	if color_name ~= "miss-dracula" then
 		return table.concat({
 			string.format("%%#StatuslineModeSeparator%s#", hl),
 			string.format("%%#StatuslineMode%s#%s", hl, mode),
