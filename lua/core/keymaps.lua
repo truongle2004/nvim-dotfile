@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+
 map("n", "ff", ":lua vim.lsp.buf.format()<CR>")
 map("i", "<C-j>", "<down>")
 map("i", "<C-k>", "<up>")
@@ -30,5 +31,5 @@ map("n", "<leader>ff", ":FzfLua files<cr>")
 map("n", "<leader><leader>f", ":FzfLua grep_project<cr>")
 map("v", "<leader>l", "$y<cr>")
 map("n", "<leader>sc", ":source %<cr>")
-
-vim.api.nvim_set_keymap("t", "<C-x>", [[<C-\><C-n>]], { noremap = true, silent = true })
+map("t", "<C-x>", [[<C-\><C-n>]], { noremap = true, silent = true })
+map('n', '<F3>', ':set spell! spell?<CR>', { noremap = true, silent = true })

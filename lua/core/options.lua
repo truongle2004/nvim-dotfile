@@ -46,7 +46,7 @@ vim.o.ttimeoutlen = 10
 vim.o.termguicolors = true
 
 vim.o.spelllang = "en_us"
-vim.o.spell = true
+vim.o.spell = false
 
 -- Folding.
 vim.o.foldcolumn = "1"
