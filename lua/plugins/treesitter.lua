@@ -20,5 +20,6 @@ return {
 	{
 		"nvim-treesitter/playground",
 		event = "BufRead",
+        ft = "lua",
 	},
 }
