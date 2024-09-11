@@ -90,11 +90,13 @@ function M.mode_component()
 		hl = "Command"
 	end
 
+    local admin_name = "truong le"
 	-- Construct the bubble-like component.
 	if color_name ~= "miss-dracula" then
 		return table.concat({
-			string.format("%%#StatuslineModeSeparator%s#", hl),
-			string.format("%%#StatuslineMode%s#%s", hl, mode),
+			string.format("%%#StatuslineModeSeparator%s#", hl ),
+            admin_name,
+			string.format(" %%#StatuslineMode%s#%s", hl, mode),
 			string.format("%%#StatuslineModeSeparator%s#", hl),
 		})
 	end
