@@ -1,5 +1,9 @@
 ---@diagnostic disable: undefined-global, missing-fields
 -- load leader key first
+
+
+vim.loader.enable()
+
 vim.g.mapleader = " "
 
 -- load color
